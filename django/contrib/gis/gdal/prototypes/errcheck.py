@@ -10,11 +10,15 @@ from django.contrib.gis.gdal.libgdal import lgdal
 # arguments passed in by reference. 
 def arg_byref(args, offset=-1):
     "Returns the pointer argument's by-refernece value."
-    return args[offset]._obj.value
+    if hasattr(args[offset], '_obj'):
+        return args[offset]._obj.value
+    return args[offset].contents.value
 
 def ptr_byref(args, offset=-1):
     "Returns the pointer argument passed in by-reference."
-    return args[offset]._obj
+    if hasattr(args[offset], '_obj'):
+        return args[offset]._obj
+    return args[offset].contents
 
 def check_bool(result, func, cargs):
     "Returns the boolean evaluation of the value."
@@ -123,5 +127,8 @@ def check_str_arg(result, func, cargs):
     returns both the double and tring values.
     """
     dbl = result
-    ptr = cargs[-1]._obj
+    if hasattr(cargs[-1], '_obj'):
+        ptr = cargs[-1]._obj
+    else:
+        ptr = cargs[-1].contents
     return dbl, ptr.value

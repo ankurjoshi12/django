@@ -28,7 +28,9 @@ else:
 ### ctypes error checking routines ###
 def last_arg_byref(args):
     "Returns the last C argument's value by reference."
-    return args[-1]._obj.value
+    if hasattr(args[-1], '_obj'):
+        return args[-1]._obj.value
+    return args[-1].contents.value
 
 def check_dbl(result, func, cargs):
     "Checks the status code and returns the double value passed in by reference."
